@@ -1,6 +1,4 @@
-
-const fs = require("fs");
-const path = require("path");
+const cloudinary = require("../config/cloudinary");
 const User = require("../models/User");
 const { sendSuccess, sendError } = require("../utils/response");
 
@@ -61,19 +59,28 @@ const updateProfilePhoto = async (req, res, next) => {
     }
 
     const user = await User.findById(req.user._id);
+
     if (!user) {
       return sendError(res, "User not found", 404);
     }
 
-  
+    // Delete previous image from Cloudinary
     if (user.profilePicture) {
-      const oldPath = path.join(__dirname, "..", user.profilePicture);
-      fs.unlink(oldPath, (err) => {
-      });
+      const publicId = user.profilePicture
+        .split("/")
+        .slice(-2)
+        .join("/")
+        .split(".")[0];
+
+      try {
+        await cloudinary.uploader.destroy(publicId);
+      } catch (err) {
+        console.log("Old image could not be deleted.");
+      }
     }
 
-    
-    user.profilePicture = `/uploads/profile/${req.file.filename}`;
+    user.profilePicture = req.file.path;
+
     await user.save();
 
     return sendSuccess(res, "Profile photo updated successfully", {
@@ -83,5 +90,4 @@ const updateProfilePhoto = async (req, res, next) => {
     next(error);
   }
 };
-
 module.exports = { getProfile, updateProfile, updateProfilePhoto };
