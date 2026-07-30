@@ -130,3 +130,26 @@ const getMe = async (req, res, next) => {
 };
 
 module.exports = { register, login, getMe };
+
+
+
+// Logout
+const logout = async (req, res, next) => {
+  try {
+    return sendSuccess(
+      res,
+      "Logout successful",
+      null,
+      200
+    );
+  } catch (error) {
+    next(error);
+  }
+};
+
+module.exports = {
+  register,
+  login,
+  getMe,
+  logout,
+};

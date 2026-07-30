@@ -6,7 +6,7 @@ const taskSchema = new mongoose.Schema(
   {
     user: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: "User", // Links this task to a specific user.
+      ref: "User",
       required: true,
     },
     title: {
@@ -26,7 +26,7 @@ const taskSchema = new mongoose.Schema(
     },
   },
   {
-    timestamps: true, // Automatically adds createdAt and updatedAt fields.
+    timestamps: true, 
   }
 );
 
